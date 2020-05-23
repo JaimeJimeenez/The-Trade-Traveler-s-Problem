@@ -37,12 +37,15 @@ int Graph::totalVertex()
 	return vertex;
 }
 
-int* Graph::dijkstra(Graph)
+int* Graph::dijkstra(Graph actualGraph)
 {
-	return nullptr;
+	Set V(actualGraph.totalVertex());
+
+	for (int i{ 0 }; i < actualGraph.totalVertex(); i++) V.inserts(i);
+	
 }
 
-Graph Graph::prim(Graph)
+Graph Graph::prim(Graph actualGraph)
 {
 	
 }
@@ -55,6 +58,11 @@ std::initializer_list<edgeGraph> Graph::travelingSalesmanNeighbour(Graph actualG
 std::initializer_list<edgeGraph> Graph::travelingSalesmanPrim(Graph, int)
 {
 	return std::initializer_list<edgeGraph>();
+}
+
+std::string Graph::printVector(std::string, int*, int)
+{
+	return std::string();
 }
 
 std::string Graph::print(std::string s)
@@ -73,6 +81,54 @@ std::string Graph::print(std::string s)
 		}
 	}
 	ss << "\n";
+
+	return ss.str();
+}
+
+std::string Graph::depth(int start)
+{
+	std::stringstream ss;
+	bool* visited = new bool[vertex];
+
+	for (int i{ 0 }; i < vertex; i++) visited[i] = false;
+
+	ss << "\nDepth tour \n";
+
+	int newVertex = start - 1;
+
+	do {
+		ss << "\n" << depth(newVertex, visited);
+		newVertex = notVisitedVertex(visited, vertex);
+	} while (vertex != -1);
+
+	ss << "\n";
+
+	return ss.str();
+}
+
+int Graph::notVisitedVertex(bool* visited, int vertex)
+{
+	for (int i{ 0 }; i < totalVertex(); i++) {
+		if (edge[vertex] == edge[i]) return vertex;
+	}
+	return -1;
+}
+
+void Graph::MinimunEdgeCost(Graph, Set, Set, int&, int&)
+{
+}
+
+std::string Graph::depth(int vertex, bool*& visited)
+{
+	std::stringstream ss;
+
+	visited[vertex] = true;
+
+	ss << vertex + 1 << " ";
+	
+	for (int i{ 0 }; i < vertex; i++) {
+		if (edge[vertex][i] != Graph::INFINITE && !visited[i]) ss << depth(i, visited);
+	}
 
 	return ss.str();
 }
