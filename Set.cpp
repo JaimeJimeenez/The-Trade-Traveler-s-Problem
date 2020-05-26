@@ -1,117 +1,98 @@
 #include "Set.h"
 #include <sstream>
 
-Set::Set(int cardinality)
+Set::Set(int size) :
+	size{ size },
+	//Inicializamos el vector, del tamaño especificado, de punteros bool a 'false'
+	elements{ std::vector<std::shared_ptr<bool>>(size, std::make_shared<bool>(false)) }
 {
-	this->cardinality = cardinality;
-	elements = new bool[cardinality];
-
-	for (int i{ 0 }; i < cardinality; i++) elements[i] = false;
+	
 }
 
-Set::Set(int set, bool belongs)
+Set::Set(int size, bool belongs) :
+	size{ size },
+	//Inicializamos el vector, del tamaño especificado, de punteros bool a el valor del parametro 
+	//especificado en el constructor 'belongs'
+	elements{ std::vector<std::shared_ptr<bool>>(size, std::make_shared<bool>(belongs)) }
 {
-	this->cardinality = set;
-	elements = new bool[cardinality];
-
-	for (int i{ 0 }; i < cardinality; i++)  elements[i] = belongs;
+	
 }
 
 Set::~Set()
 {
-	delete[] elements;
+	
 }
+
 
 bool Set::isEmpty() const
 {
-	bool empty = true;
+	//std::vector::empty comprueba si el vector esta vacio (std::vector::size = 0)
+	if (elements.empty()) return true;
+	else return false;
+}
 
-	for (int i{ 0 }; i < cardinality; i++) {
-		if (elements[i]) {
-			empty = false;
-			break;
-		}
+bool Set::isPart(int val) const
+{
+	if (val >= 1 && val <= Size()) return *elements.at(val - 1);
+	else return false;
+}
+
+bool Set::isEqual(Set actualSet) const
+{
+	if (size == actualSet.Size()) {
+		for (int i{ 0 }; i < size; i++) 
+			if (elements.at(i) != actualSet.Elements().at(i)) return false;
+		return true;
 	}
-
-	return empty;
+	return false;
 }
 
-bool Set::belongs(int element)
+void Set::insert(int val)
 {
-	bool exists;
-
-	if (element >= 1 && element <= cardinality) exists = this->elements[element - 1];
-	else exists = false;
-
-	return exists;
+	if (val >= 1 && val <= size && elements.at(val-1) == false ) elements.at(val - 1) = std::make_shared<bool>(true);
 }
 
-bool Set::isEqual(Set actualSet)
+void Set::erase(int val)
 {
-	bool equals;
+	if (val >= 1 && val <= size && elements.at(val - 1) != false) elements.at(val - 1) = std::make_shared<bool>(false);
+}
 
-	if (actualSet.cardinality == cardinality) {
-		equals = true;
-
-		for (int i{ 0 }; i < actualSet.cardinality; i++) {
-			if (actualSet.elements[i] != elements[i]) {
-				equals = false;
-				break;
-			}
-		}
+Set Set::add(Set addeSet)
+{
+	if (size == addeSet.Size()) {
+		Set resultSet{ size };
+		resultSet.Elements(elements);
+		for (int i{ 1 }; i < size; i++)
+			resultSet.insert(i);
+		return resultSet;
 	}
-	else equals = false;
-
-	return equals;
+	else throw std::string("Los tamaños de los sets han de ser iguales");
 }
 
-void Set::inserts(int element)
+Set Set::substract(Set subsSet)
 {
-	if (element >= 1 && element <= cardinality) elements[element - 1] = false;
-}
+	if (size == subsSet.Size()) {
+		Set resultSet{ size };
 
-void Set::deleted(int element)
-{
-	if (element >= 1 && element <= cardinality) elements[element - 1] = false;
-}
+		for (int i{ 1 }; i < size; i++)
+			if (isPart(i) && !subsSet.isPart(i)) resultSet.insert(i);
 
-Set Set::add(Set firstSet, Set secondSet)
-{
-	Set resultSet = Set(firstSet.cardinality);
-
-	if (firstSet.cardinality == secondSet.cardinality) {
-		for (int i{ 1 }; i <= firstSet.cardinality; i++) {
-			if (firstSet.belongs(i) || secondSet.belongs(i)) resultSet.inserts(i);
-		}
+		return resultSet;
 	}
-
-	return resultSet;
+	else throw std::string("Los tamaños de los sets han de ser iguales");
 }
 
-Set Set::substract(Set firstSet, Set secondSet)
+Set Set::intersect(Set secondSet)
 {
-	Set resultSet = Set(firstSet.cardinality);
+	if (size == secondSet.Size()) {
+		Set resultSet{ size };
 
-	if (firstSet.cardinality == secondSet.cardinality) {
-		for (int i{ 1 }; i <= firstSet.cardinality; i++) {
-			if (firstSet.belongs(i) && !secondSet.belongs(i)) resultSet.inserts(i);
-		}
+		for (int i{ 1 }; i <= size; i++)
+			if (isPart(i) && secondSet.isPart(i)) resultSet.insert(i);
+		
+		return resultSet;
 	}
-
-	return resultSet;
-}
-
-Set Set::intersect(Set firstSet, Set secondSet)
-{
-	Set resultSet = Set(firstSet.cardinality);
-
-	if (firstSet.cardinality == secondSet.cardinality) {
-		for (int i{ 1 }; i <= firstSet.cardinality; i++) {
-			if (firstSet.belongs(i) && secondSet.belongs(i)) resultSet.inserts(i);
-		}
-	}
-
-	return resultSet;
+	else throw std::string("Los tamaños de los sets han de ser iguales");
 }
 
 std::string Set::print(std::string s)
@@ -120,8 +101,8 @@ std::string Set::print(std::string s)
 
 	ss << s << "{";
 
-	for (int i{ 0 }; i < cardinality; i++) {
-		if (elements[i]) ss << " " << (i + 1);
+	for (int i{ 0 }; i < size; i++) {
+		if (elements.at(i)) ss << " " << (i + 1);
 	}
 
 	ss << "} \n";
