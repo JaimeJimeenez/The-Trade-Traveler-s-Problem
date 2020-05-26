@@ -4,7 +4,7 @@
 Set::Set(int size) :
 	size{ size },
 	//Inicializamos el vector, del tamaño especificado, de punteros bool a 'false'
-	elements{ std::vector<std::shared_ptr<bool>>(size, std::make_shared<bool>(false)) }
+	elements{ std::vector<std::shared_ptr<bool>>(size, std::make_shared<bool>(false) ) }
 {
 	
 }
