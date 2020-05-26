@@ -1,31 +1,35 @@
 #pragma once
 #include <iostream>
+#include <memory>
+#include <vector>
 
 class Set
 {
 public:
 
-	Set(int);
-	Set(int, bool);
+	Set(int size);
+	Set(int set, bool belongs);
 	~Set();
 
 	bool isEmpty() const;
-	bool belongs(int);
-	bool isEqual(Set);
+	bool isPart(int val) const;
+	bool isEqual(Set actualSet) const;
 
-	void inserts(int);
-	void deleted(int);
+	void insert(int val);
+	void erase(int val);
 
-	static Set add(Set, Set);
-	static Set substract(Set, Set);
-	static Set intersect(Set, Set);
+	Set add(Set addeSet);
+	Set substract(Set subsSet);
+	Set intersect(Set secondSet);
 
-	std::string print(std::string);
+	std::string print(std::string s);
 
+	int Size() const { return size; }
+	std::vector<std::shared_ptr<bool>> Elements() const { return elements; }
+	void Elements(const std::vector<std::shared_ptr<bool>>& val) { elements = val; }
 private:
 
-	int cardinality;
-	bool* elements;
-
+	int size;
+	std::vector<std::shared_ptr<bool>> elements;
 };
 

@@ -4,7 +4,7 @@ class edgeGraph
 {
 public:
 
-	edgeGraph(int, int, int);
+	edgeGraph(int firstVertex, int nextVertex, int costs);
 
 	int firstVertex;
 	int nextVertex;
