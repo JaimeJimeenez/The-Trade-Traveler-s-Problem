@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <memory>
+#include <list>
 
 #include "edgeGraph.h"
 #include "Set.h"
@@ -9,34 +11,33 @@ class Graph
 {
 public:
 
-	Graph(int);
-	Graph(int, std::vector<std::vector<int>>);
+	Graph(int vertices);
 	~Graph();
 
-	void insert(int, int, int);
+	void insert(int v, int w, int cost);
+	int cost(int v, int w);
 
-	int costs(int, int);
-	int totalVertex();
+	std::shared_ptr<int> dijkstra();
+	Graph prim();
+	std::list<edgeGraph> travelingSalesmanNeighbour();
+	std::list<edgeGraph> travelingSalesmanPrim();
+	std::string printVector(std::string s);
 
-	static int* dijkstra(Graph);
-	static Graph prim(Graph);
-	static std::initializer_list<edgeGraph> travelingSalesmanNeighbour(Graph, int);
-	static std::initializer_list<edgeGraph> travelingSalesmanPrim(Graph, int);
-	static std::string printVector(std::string, int*, int);
+	std::string print(std::string s);
+	std::string depth(int start);
 
-	std::string print(std::string);
-	std::string depth(int);
+	int Vertices() const { return vertices; }
 
 private:
 
 	static const int INFINITE = std::numeric_limits<unsigned short int>::max();
 
-	int vertex;
-	int** edge;
-	int notVisitedVertex(bool*, int);
-
+	int vertices;
+	std::vector<std::vector<std::shared_ptr<int>>> edges;
+	int notVisitedVertex(const std::vector<std::shared_ptr<bool>>& visited , int vertices);
+	std::string depth(int vertex, std::vector<std::shared_ptr<bool>>& visited);
 	static void MinimunEdgeCost(Graph, Set, Set, int&, int&);
 	
-	std::string depth(int, bool*&);
+	
 };
 
