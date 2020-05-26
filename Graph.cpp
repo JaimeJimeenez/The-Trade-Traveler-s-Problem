@@ -1,134 +1,98 @@
 #include "Graph.h"
+
 #include <sstream>
 
-Graph::Graph(int vertex)
+Graph::Graph(int vertices) :
+	vertices{ vertices },
+	//Iniciliazamos el vector de vectores de punteros al valor maximo
+	edges{ std::vector < std::vector<std::shared_ptr<int>> >(vertices, std::vector<std::shared_ptr<int>>(Graph::INFINITE)) }
 {
-	this->vertex = vertex;
 
-	edge = new int* [vertex];
-
-	for (int i{ 0 }; i < vertex; i++) edge[i] = new int[vertex];
-
-	for (int i{ 0 }; i < vertex; i++) {
-		for (int j{ 0 }; j < vertex; j++) edge[i][j] = Graph::INFINITE;
-	}
-}
-
-Graph::Graph(int, std::vector<std::vector<int>>)
-{
 }
 
 Graph::~Graph()
 {
+
 }
 
-void Graph::insert(int firstVertex, int nextVertex, int cost)
+void Graph::insert(int v, int w, int cost)
 {
-	if (firstVertex >= 1 && firstVertex <= vertex && nextVertex >= 1 && nextVertex <= vertex) edge[firstVertex - 1][nextVertex - 1] = cost;
+	if (v >= 1 && v <= Vertices() && w >= 1 && w <= Vertices()) edges.at(v - 1).at(w - 1) = std::make_shared<int>(cost);
 }
 
-int Graph::costs(int firstVertex, int nextVertex)
+int Graph::cost(int v, int w)
 {
-	return (firstVertex >= 1 && firstVertex <= vertex && nextVertex >= 1 && nextVertex <= vertex) ? edge[firstVertex - 1][nextVertex - 1] : Graph::INFINITE;
+	return (v >= 1 && v <= Vertices() && w >= 1 && w <= Vertices()) ? *edges.at(v - 1).at(w - 1) : Graph::INFINITE;
 }
 
-int Graph::totalVertex()
+
+
+std::shared_ptr<int> Graph::dijkstra()
 {
-	return vertex;
+
 }
 
-int* Graph::dijkstra(Graph actualGraph)
+Graph Graph::prim()
 {
-	Set V(actualGraph.totalVertex());
 
-	for (int i{ 0 }; i < actualGraph.totalVertex(); i++) V.inserts(i);
-	
 }
 
-Graph Graph::prim(Graph actualGraph)
+std::list<edgeGraph> Graph::travelingSalesmanNeighbour()
 {
-	
+
 }
 
-std::initializer_list<edgeGraph> Graph::travelingSalesmanNeighbour(Graph actualGraph, int actualVertex)
+std::list<edgeGraph> Graph::travelingSalesmanPrim()
 {
-	
+
 }
 
-std::initializer_list<edgeGraph> Graph::travelingSalesmanPrim(Graph, int)
+std::string Graph::printVector(std::string s)
 {
-	return std::initializer_list<edgeGraph>();
-}
 
-std::string Graph::printVector(std::string, int*, int)
-{
-	return std::string();
 }
 
 std::string Graph::print(std::string s)
 {
-	std::stringstream ss;
 
-	ss << "\n" << s << "\n";
-	for (int i{ 0 }; i < vertex; i++) {
-		ss << "\n[" << (i + 1) << "] ";
-		for (int j{ 0 }; j < vertex; j++) {
-			if (edge[i][j] == Graph::INFINITE) ss << " -- ";
-			else {
-				if (edge[i][j] < 10) ss << " " << edge[i][j] << " ";
-				else ss << " " << edge[i][j] << " ";
-			}
-		}
-	}
-	ss << "\n";
+}
 
-	return ss.str();
+void Graph::MinimunEdgeCost(Graph, Set, Set, int&, int&)
+{
+
 }
 
 std::string Graph::depth(int start)
 {
 	std::stringstream ss;
-	bool* visited = new bool[vertex];
 
-	for (int i{ 0 }; i < vertex; i++) visited[i] = false;
+	std::vector<std::shared_ptr<bool>> visited(vertices, std::make_shared<bool>(false));
 
-	ss << "\nDepth tour \n";
-
-	int newVertex = start - 1;
-
+	ss << "\nDeth tour: \n";
+	int newVertex{ start - 1 };
 	do {
 		ss << "\n" << depth(newVertex, visited);
-		newVertex = notVisitedVertex(visited, vertex);
-	} while (vertex != -1);
+		newVertex = notVisitedVertex(visited, vertices);
+	} while (vertices != -1);
 
 	ss << "\n";
 
 	return ss.str();
 }
 
-int Graph::notVisitedVertex(bool* visited, int vertex)
+int Graph::notVisitedVertex(const std::vector<std::shared_ptr<bool>>& visited, int vertices)
 {
-	for (int i{ 0 }; i < totalVertex(); i++) {
-		if (edge[vertex] == edge[i]) return vertex;
-	}
-	return -1;
+
 }
 
-void Graph::MinimunEdgeCost(Graph, Set, Set, int&, int&)
-{
-}
-
-std::string Graph::depth(int vertex, bool*& visited)
+std::string Graph::depth(int vertex, std::vector<std::shared_ptr<bool>>& visited)
 {
 	std::stringstream ss;
-
-	visited[vertex] = true;
+	visited.at(vertex) = std::make_shared<bool>(true);
 
 	ss << vertex + 1 << " ";
-	
-	for (int i{ 0 }; i < vertex; i++) {
-		if (edge[vertex][i] != Graph::INFINITE && !visited[i]) ss << depth(i, visited);
-	}
+	for (int i{ 0 }; i < vertices; i++)
+		if (*edges.at(vertex).at(i) != Graph::INFINITE && !visited.at(i)) ss << depth(i, visited);
 
 	return ss.str();
 }
