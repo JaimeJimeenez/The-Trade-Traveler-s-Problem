@@ -32,9 +32,35 @@ std::shared_ptr<int> Graph::dijkstra()
 
 }
 
-Graph Graph::prim()
+Graph Graph::prim(Graph G)
 {
+	//Se inicializa V con todos los vertices de G
+	Set V(G.Vertices());
+	for (int i{ 1 }; i <= G.Vertices(); i++) {
+		V.insert(i);
+	}
 
+	//Se inicializa U con el vertice inicial (1)
+	Set U(1);
+	U.insert(1);
+
+	//Se inicializa W con los elementos no iguales de V y U
+	Set W(G.Vertices());
+	W = V.substract(U);
+
+	Graph T(G.Vertices());
+
+	while (!U.isEqual(V)) {
+		int i{ 1 };
+		int j{ 1 };
+		for (i; i < U.Size(); i++) {
+			for (j; j < V.Size(); j++) {
+				MinimunEdgeCost(G, U, V, i, j);
+			}
+		}
+		U.add(i);
+		V.erase(j);
+	}
 }
 
 std::list<edgeGraph> Graph::travelingSalesmanNeighbour()
@@ -49,17 +75,25 @@ std::list<edgeGraph> Graph::travelingSalesmanPrim()
 
 std::string Graph::printVector(std::string s)
 {
+	std::stringstream ss;
+
+	std::cout << s;
+
 
 }
 
 std::string Graph::print(std::string s)
 {
+	std::stringstream ss;
 
+	std::cout << s;
 }
 
-void Graph::MinimunEdgeCost(Graph, Set, Set, int&, int&)
+void Graph::MinimunEdgeCost(Graph G, Set U, Set W, int& u, int& w)
 {
-
+	if (W.isPart(w) && U.isPart(u)) {
+		G.cost(u, w);
+	}
 }
 
 std::string Graph::depth(int start)
