@@ -17,13 +17,11 @@ public:
 	void insert(int v, int w, int cost);
 	int costs(int v, int w);
 
-	std::shared_ptr<int> dijkstra();
-	Graph prim();
-	std::list<edgeGraph> travelingSalesmanNeighbour();
-	std::list<edgeGraph> travelingSalesmanPrim();
-	std::string printVector(std::string s);
 
-	std::string print(std::string s);
+	std::list<edgeGraph> travelingSalesmanNeighbour(int startVertex);
+	std::list<edgeGraph> travelingSalesmanPrim(int startVertex);
+	std::string printVector(const std::string& s);
+	std::string print(const std::string& s);
 	std::string depth(int start);
 
 	int Vertices() const { return vertices; }
@@ -33,11 +31,10 @@ private:
 	static const int INFINITE = std::numeric_limits<unsigned short int>::max();
 
 	int vertices;
-	std::vector<std::vector<std::shared_ptr<int>>> edges;
+	std::vector<std::vector<int>> edges; //Quitado std::shared_ptr
 	int notVisitedVertex(const std::vector<std::shared_ptr<bool>>& visited , int vertices);
 	std::string depth(int vertex, std::vector<std::shared_ptr<bool>>& visited);
-	void MinimunEdgeCost(Set V, Set W, int v, int w);
-	
-	
+	edgeGraph MinimumEdgeCost(const Set& W, int v, int w);
+
 };
 

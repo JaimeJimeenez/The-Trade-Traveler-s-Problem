@@ -5,7 +5,7 @@
 Graph::Graph(int vertices) :
 	vertices{ vertices },
 	//Iniciliazamos el vector de vectores de punteros al valor maximo
-	edges{ std::vector < std::vector<std::shared_ptr<int>> >(vertices, std::vector<std::shared_ptr<int>>(Graph::INFINITE)) }
+	edges{ std::vector < std::vector<int> >(vertices, std::vector<int>(Graph::INFINITE)) }
 {
 
 }
@@ -17,80 +17,101 @@ Graph::~Graph()
 
 void Graph::insert(int v, int w, int cost)
 {
-	if (v >= 1 && v <= vertices && w >= 1 && w <= vertices) edges.at(v - 1).at(w - 1) = std::make_shared<int>(cost);
+	if (v >= 1 && v <= vertices && w >= 1 && w <= vertices) edges.at(v - 1).at(w - 1) = cost;
 }
 
 int Graph::costs(int v, int w)
 {
-	return (v >= 1 && v <= vertices && w >= 1 && w <= vertices) ? *edges.at(v - 1).at(w - 1) : Graph::INFINITE;
+	return (v >= 1 && v <= vertices && w >= 1 && w <= vertices) ? edges.at(v - 1).at(w - 1) : Graph::INFINITE;
 }
 
-
-
-std::shared_ptr<int> Graph::dijkstra()
+edgeGraph Graph::MinimumEdgeCost(const Set& W, int v, int w)
 {
-
-}
-
-Graph Graph::prim()
-{
-	//Se inicializa V con todos los vertices de G
-	Set V(vertices);
+	int minim{ Graph::INFINITE };
 	for (int i{ 1 }; i <= vertices; i++) {
-		V.insert(i);
+		if (W.isPart(i) && costs(i, v) < minim) {
+			minim = costs(i, v);
+			w = i;
+		}
 	}
 
-	//Se inicializa U con el vertice inicial (1)
-	Set U(1);
-	U.insert(1);
+	return edgeGraph (v, w, minim);
+}
 
-	//Se inicializa W con los elementos no iguales de V y U
-	Set W(vertices);
-	W = V.substract(U);
+std::list<edgeGraph> Graph::travelingSalesmanNeighbour(int startVertex)
+{
+	Set V{ vertices };
+	for (int i{ 1 }; i < vertices; i++)
+		V.insert(i);
 
-	Graph T(vertices);
+	Set T(vertices);
+	T.insert(startVertex);
 
-	while (!U.isEqual(V)) {
-		int i{ 1 };
-		int j{ 1 };
-		for (i; i < U.Size(); i++) {
-			for (j; j < V.Size(); j++) {
-				MinimunEdgeCost(U, V, i, j);
+	Set W{ V.substract(T) };
+
+	std::list <edgeGraph> tour;
+
+	int u{ startVertex };
+
+	do {
+		for (int w{ 1 }; w < W.Size(); w++) 
+			if (W.isPart(w) && T.isPart(u)) {
+				tour.push_back(MinimumEdgeCost(W, u, w));
+				T.insert(w);
+				W.erase(w);
+				u = w;
+			}
+	} while (!T.isEqual(V));
+	
+	return tour;
+}
+
+std::list<edgeGraph> Graph::travelingSalesmanPrim(int startVertex)
+{
+	Set V{ vertices };
+	for (int i{ 1 }; i < vertices; i++)
+		V.insert(i);
+
+	Set T(vertices);
+	T.insert(startVertex);
+
+	Set W{ V.substract(T) };
+
+	std::list <edgeGraph> tour;
+
+	std::vector<std::vector<int>> d(vertices, std::vector<int>(vertices, 0));
+	
+	int u{ startVertex };
+
+	do{
+		for (int w{ 1 }; w < W.Size(); w++) {
+			if(W.isPart(w) && T.isPart(u) && edges.at(w).at(u) < 2) {
+				d.at(w).at(u)++;
+				tour.push_back(MinimumEdgeCost(W, u, w));
+				T.insert(w);
+				W.erase(w);
 			}
 		}
-		U.add(i);
-		V.erase(j);
-	}
+	} while (!T.isEqual(V));
+
+	return tour;
 }
 
-std::list<edgeGraph> Graph::travelingSalesmanNeighbour()
+std::string Graph::printVector(const std::string& s)
 {
-
+	return s;
 }
 
-std::list<edgeGraph> Graph::travelingSalesmanPrim()
-{
-
-}
-
-std::string Graph::printVector(std::string s)
-{
-
-}
-
-std::string Graph::print(std::string s)
+std::string Graph::print(const std::string& s)
 {
 	std::stringstream ss;
 
 	std::cout << s;
+
+	return s;
 }
 
-void Graph::MinimunEdgeCost( Set V, Set W, int v, int w)
-{
-	if (W.isPart(w) && V.isPart(v)) {
-		costs(v, w);
-	}
-}
+
 
 std::string Graph::depth(int start)
 {
@@ -112,7 +133,7 @@ std::string Graph::depth(int start)
 
 int Graph::notVisitedVertex(const std::vector<std::shared_ptr<bool>>& visited, int vertices)
 {
-
+	return 0;
 }
 
 std::string Graph::depth(int vertex, std::vector<std::shared_ptr<bool>>& visited)
@@ -122,7 +143,7 @@ std::string Graph::depth(int vertex, std::vector<std::shared_ptr<bool>>& visited
 
 	ss << vertex + 1 << " ";
 	for (int i{ 0 }; i < vertices; i++)
-		if (*edges.at(vertex).at(i) != Graph::INFINITE && !visited.at(i)) ss << depth(i, visited);
+		if (edges.at(vertex).at(i) != Graph::INFINITE && !visited.at(i)) ss << depth(i, visited);
 
 	return ss.str();
 }
