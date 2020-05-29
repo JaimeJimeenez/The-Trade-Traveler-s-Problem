@@ -37,7 +37,7 @@ bool Set::isPart(int val) const
 	else return false;
 }
 
-bool Set::isEqual(Set actualSet) const
+bool Set::isEqual(const Set& actualSet) const
 {
 	if (size == actualSet.Size()) {
 		for (int i{ 0 }; i < size; i++) 
@@ -49,15 +49,15 @@ bool Set::isEqual(Set actualSet) const
 
 void Set::insert(int val)
 {
-	if (val >= 1 && val <= size && elements.at(val-1) == false ) elements.at(val - 1) = std::make_shared<bool>(true);
+	if (val >= 1 && val <= size && *elements.at(val-1) == false ) elements.at(val - 1) = std::make_shared<bool>(true);
 }
 
 void Set::erase(int val)
 {
-	if (val >= 1 && val <= size && elements.at(val - 1) != false) elements.at(val - 1) = std::make_shared<bool>(false);
+	if (val >= 1 && val <= size && *elements.at(val - 1) != false) elements.at(val - 1) = std::make_shared<bool>(false);
 }
 
-Set Set::add(Set addeSet)
+Set Set::add(const Set& addeSet)
 {
 	if (size == addeSet.Size()) {
 		Set resultSet{ size };
@@ -69,7 +69,7 @@ Set Set::add(Set addeSet)
 	else throw std::string("Los tamaños de los sets han de ser iguales");
 }
 
-Set Set::substract(Set subsSet)
+Set Set::substract(const Set& subsSet)
 {
 	if (size == subsSet.Size()) {
 		Set resultSet{ size };
@@ -82,7 +82,7 @@ Set Set::substract(Set subsSet)
 	else throw std::string("Los tamaños de los sets han de ser iguales");
 }
 
-Set Set::intersect(Set secondSet)
+Set Set::intersect(const Set& secondSet)
 {
 	if (size == secondSet.Size()) {
 		Set resultSet{ size };
@@ -95,7 +95,7 @@ Set Set::intersect(Set secondSet)
 	else throw std::string("Los tamaños de los sets han de ser iguales");
 }
 
-std::string Set::print(std::string s)
+std::string Set::print(const std::string& s)
 {
 	std::stringstream ss;
 

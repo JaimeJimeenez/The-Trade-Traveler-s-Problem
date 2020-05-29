@@ -7,3 +7,5 @@ edgeGraph::edgeGraph(int firstVertex, int nextVertex, int costs) :
 {
 
 }
+
+
