@@ -10,6 +10,13 @@ Graph::Graph(int vertices) :
 
 }
 
+Graph::Graph(int vertices, std::vector<std::vector<int>> costs) :
+	vertices{ vertices },
+	edges{ costs }
+{
+
+}
+
 Graph::~Graph()
 {
 
@@ -41,7 +48,6 @@ edgeGraph Graph::MinimumEdgeCost(const Set& W, int v, int w)
 	//Se devuelve la arista de dos vertices con coste minimo
 	return edgeGraph(v, w, minim);
 }
-
 
 std::list<edgeGraph> Graph::travelingSalesmanNeighbour(int startVertex)
 {
@@ -110,7 +116,7 @@ std::list<edgeGraph> Graph::travelingSalesmanPrim(int startVertex)
 			if (W.isPart(w) && T.isPart(u) && edges.at(w).at(u) < 2) {
 				//Incrementa el grados de los vertices u y w
 				d.at(w).at(u)++;
-				//Añade la arista a la lista de aristas (tour)
+				//Añade ka arista a la lista de aristas (tour)
 				tour.push_back(MinimumEdgeCost(W, u, w));
 				//Se añade el vertice w al conjunto T
 				T.insert(w);
@@ -124,9 +130,16 @@ std::list<edgeGraph> Graph::travelingSalesmanPrim(int startVertex)
 	return tour;
 }
 
-std::string Graph::printVector(const std::string& s)
+std::string Graph::printVector(const std::string& s, std::vector <int> actualVector)
 {
-	return s;
+	std::stringstream ss;
+
+	ss << "\n" << s << "\n";
+	for (int i{ 0 }; i < actualVector.size(); i++) {
+		ss << actualVector.at(i) << " - ";
+	}
+
+	return ss.str();
 }
 
 std::string Graph::print(const std::string& s)
@@ -135,10 +148,21 @@ std::string Graph::print(const std::string& s)
 
 	std::cout << s;
 
-	return s;
+	ss << "\n" << s << "\n";
+	for (int i{ 0 }; i < vertices; i++) {
+		ss << "\n[" << (i + 1) << "] ";
+		for (int j{ 0 }; j < vertices; j++) {
+			if (edges.at(i).at(j) == Graph::INFINITE) ss << " -- ";
+			else {
+				if (edges.at(i).at(j) < 20) ss << " " << edges.at(i).at(j) << " ";
+				else ss << " " << edges.at(i).at(j) << " ";
+			}
+		}
+	}
+	ss << "\n";
+
+	return ss.str();
 }
-
-
 
 std::string Graph::depth(int start)
 {
@@ -160,7 +184,10 @@ std::string Graph::depth(int start)
 
 int Graph::notVisitedVertex(const std::vector<std::shared_ptr<bool>>& visited, int vertices)
 {
-	return 0;
+	for (int i{ 0 }; i < vertices; i++) {
+		if (visited.at(i) == false) return i;
+	}
+	return -1;
 }
 
 std::string Graph::depth(int vertex, std::vector<std::shared_ptr<bool>>& visited)
