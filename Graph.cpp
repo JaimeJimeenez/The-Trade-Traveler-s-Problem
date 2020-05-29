@@ -27,16 +27,21 @@ int Graph::costs(int v, int w)
 
 edgeGraph Graph::MinimumEdgeCost(const Set& W, int v, int w)
 {
+	//Se inicializa la variable minimo como una variable que posee un elemento nulo
 	int minim{ Graph::INFINITE };
+	//Se recorre cada elemento de los vertices mediante un for
 	for (int i{ 1 }; i <= vertices; i++) {
+		//Se buscará el coste minimo de los vertices tal que el iterador i pertenzca al conjunto W i el coste aportado por dicha arista sea menor que el actual
 		if (W.isPart(i) && costs(i, v) < minim) {
+			//Se modifica el valor del coste minimo
 			minim = costs(i, v);
 			w = i;
 		}
 	}
-
+	//Se devuelve la arista de dos vertices con coste minimo
 	return edgeGraph(v, w, minim);
 }
+
 
 std::list<edgeGraph> Graph::travelingSalesmanNeighbour(int startVertex)
 {
