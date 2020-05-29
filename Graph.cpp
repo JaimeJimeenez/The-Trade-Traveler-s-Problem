@@ -35,65 +35,87 @@ edgeGraph Graph::MinimumEdgeCost(const Set& W, int v, int w)
 		}
 	}
 
-	return edgeGraph (v, w, minim);
+	return edgeGraph(v, w, minim);
 }
 
 std::list<edgeGraph> Graph::travelingSalesmanNeighbour(int startVertex)
 {
+	//Se inicializa el conjunto V con todos los vertices del grafo
 	Set V{ vertices };
 	for (int i{ 1 }; i < vertices; i++)
 		V.insert(i);
 
+	//Se inicializa el conjunto T con el vertice de partida (startVertex)
 	Set T(vertices);
 	T.insert(startVertex);
 
+	//Se incializa el conjunto W con todos los vertices no seleccionados
 	Set W{ V.substract(T) };
 
+	//Se crea una lista de aristas llamada tour
 	std::list <edgeGraph> tour;
 
 	int u{ startVertex };
 
+	//Mientras que los conjuntos T y V no posean los mismos elementos
 	do {
-		for (int w{ 1 }; w < W.Size(); w++) 
+		//Se busca la arista de coste minimo
+		for (int w{ 1 }; w < W.Size(); w++)
 			if (W.isPart(w) && T.isPart(u)) {
+				//Añade dicha arista a través de la función MinimumEdgeCost
 				tour.push_back(MinimumEdgeCost(W, u, w));
+				//Se inserta el vertice escogido en el conjunto T
 				T.insert(w);
+				//Se elimina el vertice escogido del conjunto W
 				W.erase(w);
+				//Se traspasa el vertice u al vertice w, es decir, el vertice actual es el w
 				u = w;
 			}
 	} while (!T.isEqual(V));
-	
+
+	//Se devuelve la lista de aristas tour
 	return tour;
 }
 
 std::list<edgeGraph> Graph::travelingSalesmanPrim(int startVertex)
 {
+	//Se inicializa el conjunto V con todos los vertices del grafo
 	Set V{ vertices };
 	for (int i{ 1 }; i < vertices; i++)
 		V.insert(i);
-
+	
+	//Se inicializa el conjunto T con el vertice de partida (startVertex)
 	Set T(vertices);
 	T.insert(startVertex);
 
+	//Se inicializa el conjunto W con todos los vertices no seleccionados
 	Set W{ V.substract(T) };
 
+	//Se crea una lista de aristas llamada tour
 	std::list <edgeGraph> tour;
 
+	//Se crea un vector que almacena el grado de los vertices, este vector estará inicializado a 0
 	std::vector<std::vector<int>> d(vertices, std::vector<int>(vertices, 0));
-	
+
 	int u{ startVertex };
 
-	do{
+	//Mientras que los conjuntos T y V no posean los mismos elementos
+	do {
 		for (int w{ 1 }; w < W.Size(); w++) {
-			if(W.isPart(w) && T.isPart(u) && edges.at(w).at(u) < 2) {
+			if (W.isPart(w) && T.isPart(u) && edges.at(w).at(u) < 2) {
+				//Incrementa el grados de los vertices u y w
 				d.at(w).at(u)++;
+				//Añade la arista a la lista de aristas (tour)
 				tour.push_back(MinimumEdgeCost(W, u, w));
+				//Se añade el vertice w al conjunto T
 				T.insert(w);
+				//Se elimina dicho vertice del conjunto de W
 				W.erase(w);
 			}
 		}
 	} while (!T.isEqual(V));
 
+	//Se devuelve la lista de aristas tour
 	return tour;
 }
 
