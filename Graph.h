@@ -15,7 +15,7 @@ public:
 	~Graph();
 
 	void insert(int v, int w, int cost);
-	int cost(int v, int w);
+	int costs(int v, int w);
 
 	std::shared_ptr<int> dijkstra();
 	Graph prim();
@@ -36,7 +36,7 @@ private:
 	std::vector<std::vector<std::shared_ptr<int>>> edges;
 	int notVisitedVertex(const std::vector<std::shared_ptr<bool>>& visited , int vertices);
 	std::string depth(int vertex, std::vector<std::shared_ptr<bool>>& visited);
-	static void MinimunEdgeCost(Graph, Set, Set, int&, int&);
+	void MinimunEdgeCost(Set V, Set W, int v, int w);
 	
 	
 };

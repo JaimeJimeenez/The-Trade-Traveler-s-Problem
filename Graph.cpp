@@ -17,12 +17,12 @@ Graph::~Graph()
 
 void Graph::insert(int v, int w, int cost)
 {
-	if (v >= 1 && v <= Vertices() && w >= 1 && w <= Vertices()) edges.at(v - 1).at(w - 1) = std::make_shared<int>(cost);
+	if (v >= 1 && v <= vertices && w >= 1 && w <= vertices) edges.at(v - 1).at(w - 1) = std::make_shared<int>(cost);
 }
 
-int Graph::cost(int v, int w)
+int Graph::costs(int v, int w)
 {
-	return (v >= 1 && v <= Vertices() && w >= 1 && w <= Vertices()) ? *edges.at(v - 1).at(w - 1) : Graph::INFINITE;
+	return (v >= 1 && v <= vertices && w >= 1 && w <= vertices) ? *edges.at(v - 1).at(w - 1) : Graph::INFINITE;
 }
 
 
@@ -32,11 +32,11 @@ std::shared_ptr<int> Graph::dijkstra()
 
 }
 
-Graph Graph::prim(Graph G)
+Graph Graph::prim()
 {
 	//Se inicializa V con todos los vertices de G
-	Set V(G.Vertices());
-	for (int i{ 1 }; i <= G.Vertices(); i++) {
+	Set V(vertices);
+	for (int i{ 1 }; i <= vertices; i++) {
 		V.insert(i);
 	}
 
@@ -45,17 +45,17 @@ Graph Graph::prim(Graph G)
 	U.insert(1);
 
 	//Se inicializa W con los elementos no iguales de V y U
-	Set W(G.Vertices());
+	Set W(vertices);
 	W = V.substract(U);
 
-	Graph T(G.Vertices());
+	Graph T(vertices);
 
 	while (!U.isEqual(V)) {
 		int i{ 1 };
 		int j{ 1 };
 		for (i; i < U.Size(); i++) {
 			for (j; j < V.Size(); j++) {
-				MinimunEdgeCost(G, U, V, i, j);
+				MinimunEdgeCost(U, V, i, j);
 			}
 		}
 		U.add(i);
@@ -75,10 +75,6 @@ std::list<edgeGraph> Graph::travelingSalesmanPrim()
 
 std::string Graph::printVector(std::string s)
 {
-	std::stringstream ss;
-
-	std::cout << s;
-
 
 }
 
@@ -89,10 +85,10 @@ std::string Graph::print(std::string s)
 	std::cout << s;
 }
 
-void Graph::MinimunEdgeCost(Graph G, Set U, Set W, int& u, int& w)
+void Graph::MinimunEdgeCost( Set V, Set W, int v, int w)
 {
-	if (W.isPart(w) && U.isPart(u)) {
-		G.cost(u, w);
+	if (W.isPart(w) && V.isPart(v)) {
+		costs(v, w);
 	}
 }
 
